@@ -17,6 +17,7 @@ def test_provider_manifest_jsonl_contract() -> None:
         "mit-ctd",
         "mit-48px-ocr",
         "mit-layout-reference",
+        "lama-large-cleaner",
     }
 
 
@@ -32,4 +33,5 @@ def test_doctor_jsonl_reports_all_pack_providers() -> None:
         "mit-ctd",
         "mit-48px-ocr",
         "mit-layout-reference",
+        "lama-large-cleaner",
     }

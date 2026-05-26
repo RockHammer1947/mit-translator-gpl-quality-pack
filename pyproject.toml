@@ -10,7 +10,9 @@ dependencies = [
   "pydantic>=2.7,<3",
   "opencv-python>=4.9,<4.13",
   "numpy>=1.26,<3",
+  "pillow>=10,<12",
   "manga-ocr>=0.1.14",
+  "torch>=2.3,<3",
   "einops>=0.8,<1",
   "networkx>=3,<4",
   "py3langid>=0.3,<1",
@@ -45,5 +47,6 @@ include = [
   "comic_detector_sidecar*",
   "ocr_sidecar*",
   "manga_layout_sidecar*",
+  "manga_cleaner_sidecar*",
 ]
 exclude = ["tests*"]

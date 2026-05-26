@@ -14,6 +14,7 @@ mit-translator-gpl-quality-pack doctor --jsonl
 mit-translator-gpl-quality-pack detect-image --input page.png --output-dir out/detect --job-id job_001 --jsonl
 mit-translator-gpl-quality-pack recognize-batch --input batch_request.json --output-dir out/ocr --job-id job_001 --jsonl
 mit-translator-gpl-quality-pack merge-textlines --input layout_request.json --output-dir out/layout --job-id job_001 --jsonl
+mit-translator-gpl-quality-pack clean-image --input page.png --raw-mask text_mask.png --output-dir out/clean --job-id job_001 --jsonl
 ```
 
 ## Providers
@@ -21,6 +22,7 @@ mit-translator-gpl-quality-pack merge-textlines --input layout_request.json --ou
 - `mit-ctd`: MIT-derived comic text detector provider.
 - `mit-48px-ocr`: MIT 48px OCR provider.
 - `mit-layout-reference`: MIT-style/reference layout provider.
+- `lama-large-cleaner`: MIT-derived LaMa cleaner provider.
 
 ## Delegate Commands
 
@@ -30,6 +32,7 @@ own CLI environment. Advanced users may still override each compatible command:
 - `GPL_QUALITY_PACK_COMIC_DETECTOR_CMD`
 - `GPL_QUALITY_PACK_OCR_CMD`
 - `GPL_QUALITY_PACK_LAYOUT_CMD`
+- `GPL_QUALITY_PACK_CLEANER_CMD`
 
 Each override must be an executable command line for a compatible sidecar. The
 main application should prefer the top-level `mit-translator-gpl-quality-pack`

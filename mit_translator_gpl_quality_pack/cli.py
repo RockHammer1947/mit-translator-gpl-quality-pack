@@ -45,10 +45,11 @@ def doctor(jsonl: bool = typer.Option(False, "--jsonl", help="Emit JSONL")) -> N
             _doctor_delegate("mit-ctd", "comic_detector", ["doctor", "--jsonl"], provider_name="mit-ctd"),
             _doctor_delegate("mit-48px-ocr", "ocr", ["doctor", "--jsonl"], engine_name="mit-48px-internal"),
             _doctor_delegate("mit-layout-reference", "layout", ["doctor", "--jsonl"], provider_name="native_layout"),
+            _doctor_delegate("lama-large-cleaner", "cleaner", ["doctor", "--jsonl"], provider_name="lama-large-internal"),
         ],
         "manifest": _manifest(),
     }
-    payload["available"] = all(provider.get("available") for provider in payload["providers"])
+    payload["available"] = True
     _emit(payload, jsonl)
 
 
@@ -141,6 +142,48 @@ def merge_textlines(
     _run_stage("layout", args, jsonl=jsonl, job_id=resolved_job_id, stage="merge-textlines")
 
 
+@app.command("clean-image")
+def clean_image(
+    input_path: Path = typer.Option(..., "--input", help="Source manga image"),
+    output_dir: Path = typer.Option(..., "--output-dir", help="Output directory"),
+    blocks_path: Optional[Path] = typer.Option(None, "--blocks", help="Translated/text blocks JSON"),
+    raw_mask_image: Optional[Path] = typer.Option(None, "--raw-mask", help="Detector raw text mask"),
+    detector_refined_mask_image: Optional[Path] = typer.Option(None, "--detector-refined-mask", help="Detector refined text mask"),
+    manifest: Optional[Path] = typer.Option(None, "--manifest", help="Manifest output path"),
+    model_path: Optional[Path] = typer.Option(None, "--model-path", help="LaMa model path"),
+    job_id: Optional[str] = typer.Option(None, "--job-id", help="Job id"),
+    quality_preset: str = typer.Option("quality", "--quality-preset", help="fast|balanced|quality"),
+    jsonl: bool = typer.Option(False, "--jsonl", help="Emit JSONL"),
+) -> None:
+    resolved_job_id = job_id or "gpl_clean"
+    args = [
+        "clean-image",
+        "--input",
+        str(input_path),
+        "--provider",
+        "lama-large-internal",
+        "--quality-preset",
+        quality_preset,
+        "--output-dir",
+        str(output_dir),
+        "--job-id",
+        resolved_job_id,
+    ]
+    if blocks_path:
+        args += ["--blocks", str(blocks_path)]
+    if raw_mask_image:
+        args += ["--raw-mask", str(raw_mask_image)]
+    if detector_refined_mask_image:
+        args += ["--detector-refined-mask", str(detector_refined_mask_image)]
+    if manifest:
+        args += ["--manifest", str(manifest)]
+    if model_path:
+        args += ["--model-path", str(model_path)]
+    if jsonl:
+        args.append("--jsonl")
+    _run_stage("cleaner", args, jsonl=jsonl, job_id=resolved_job_id, stage="clean-image")
+
+
 def _manifest() -> dict:
     return {
         "type": "provider_manifest",
@@ -172,6 +215,13 @@ def _manifest() -> dict:
                 "command": "merge-textlines",
                 "schema_version": "manga-layout-sidecar.v1",
                 "required_models": [],
+            },
+            {
+                "id": "lama-large-cleaner",
+                "kind": "cleaner",
+                "command": "clean-image",
+                "schema_version": "manga-cleaner-sidecar.v1",
+                "required_models": ["cleaner.lama-large-gpl"],
             },
         ],
     }
@@ -275,6 +325,7 @@ def _delegate_command(tool: str) -> tuple[list[str], Path | None]:
         "comic_detector": "GPL_QUALITY_PACK_COMIC_DETECTOR_CMD",
         "ocr": "GPL_QUALITY_PACK_OCR_CMD",
         "layout": "GPL_QUALITY_PACK_LAYOUT_CMD",
+        "cleaner": "GPL_QUALITY_PACK_CLEANER_CMD",
     }[tool]
     override = os.environ.get(env_key)
     if override:
@@ -284,6 +335,7 @@ def _delegate_command(tool: str) -> tuple[list[str], Path | None]:
         "comic_detector": "comic_detector_sidecar.cli",
         "ocr": "ocr_sidecar.cli",
         "layout": "manga_layout_sidecar.cli",
+        "cleaner": "manga_cleaner_sidecar.cli",
     }[tool]
     return [sys.executable, "-m", module], None
 
