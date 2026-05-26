@@ -1,0 +1,52 @@
+[project]
+name = "mit-translator-gpl-quality-pack"
+version = "0.1.0"
+description = "GPL-3.0 quality providers for manga translation via external CLI boundaries"
+readme = "README.md"
+requires-python = ">=3.11,<3.13"
+license = { text = "GPL-3.0-only" }
+dependencies = [
+  "typer>=0.12,<1",
+  "pydantic>=2.7,<3",
+  "opencv-python>=4.9,<4.13",
+  "numpy>=1.26,<3",
+  "manga-ocr>=0.1.14",
+  "einops>=0.8,<1",
+  "networkx>=3,<4",
+  "py3langid>=0.3,<1",
+  "shapely>=2,<3",
+  "colorama>=0.4,<1",
+  "python-dotenv>=1,<2",
+  "langcodes>=3,<4",
+  "omegaconf>=2.3,<3",
+  "onnxruntime>=1.18,<2",
+]
+
+[tool.uv]
+package = true
+
+[project.optional-dependencies]
+mit = [
+  "torch>=2,<3",
+  "torchvision>=0.17,<1",
+  "scikit-image>=0.23,<1",
+  "timm>=1,<2",
+]
+dev = [
+  "pytest>=8,<9",
+]
+
+[project.scripts]
+mit-translator-gpl-quality-pack = "mit_translator_gpl_quality_pack.cli:app"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.setuptools.packages.find]
+include = [
+  "mit_translator_gpl_quality_pack*",
+  "comic_detector_sidecar*",
+  "ocr_sidecar*",
+  "manga_layout_sidecar*",
+]
+exclude = ["tests*"]
