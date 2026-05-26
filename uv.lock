@@ -454,19 +454,16 @@ dependencies = [
     { name = "py3langid" },
     { name = "pydantic" },
     { name = "python-dotenv" },
+    { name = "scikit-image" },
     { name = "shapely" },
+    { name = "timm" },
+    { name = "torchvision" },
     { name = "typer" },
 ]
 
 [package.optional-dependencies]
 dev = [
     { name = "pytest" },
-]
-mit = [
-    { name = "scikit-image" },
-    { name = "timm" },
-    { name = "torch" },
-    { name = "torchvision" },
 ]
 
 [package.metadata]
@@ -484,14 +481,13 @@ requires-dist = [
     { name = "pydantic", specifier = ">=2.7,<3" },
     { name = "pytest", marker = "extra == 'dev'", specifier = ">=8,<9" },
     { name = "python-dotenv", specifier = ">=1,<2" },
-    { name = "scikit-image", marker = "extra == 'mit'", specifier = ">=0.23,<1" },
+    { name = "scikit-image", specifier = ">=0.23,<1" },
     { name = "shapely", specifier = ">=2,<3" },
-    { name = "timm", marker = "extra == 'mit'", specifier = ">=1,<2" },
-    { name = "torch", marker = "extra == 'mit'", specifier = ">=2,<3" },
-    { name = "torchvision", marker = "extra == 'mit'", specifier = ">=0.17,<1" },
+    { name = "timm", specifier = ">=1,<2" },
+    { name = "torchvision", specifier = ">=0.17,<1" },
     { name = "typer", specifier = ">=0.12,<1" },
 ]
-provides-extras = ["mit", "dev"]
+provides-extras = ["dev"]
 
 [[package]]
 name = "mpmath"
