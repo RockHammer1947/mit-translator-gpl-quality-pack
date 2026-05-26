@@ -463,3 +463,7 @@ def _benchmark_warnings(report: dict[str, object]) -> list[dict[str, str]]:
     if summary.get("gate_passed") is False:
         return [{"code": "CLEANER_BENCHMARK_GATE_FAILED", "message": "Cleaner benchmark did not meet the configured MIT quality gate."}]
     return []
+
+
+if __name__ == "__main__":
+    app()

@@ -249,6 +249,8 @@ def _doctor_delegate(
     if completed.returncode != 0:
         return {**base, "reason": completed.stderr.strip() or completed.stdout.strip() or "delegate doctor failed"}
     payload = _parse_json_payload(completed.stdout)
+    if not payload:
+        return {**base, "reason": "delegate doctor returned no JSON payload"}
     if provider_name:
         providers = payload.get("providers") if isinstance(payload, dict) else None
         provider = next((item for item in providers or [] if item.get("name") == provider_name or item.get("provider") == provider_name), None)
@@ -259,9 +261,7 @@ def _doctor_delegate(
         engine = next((item for item in engines or [] if item.get("name") == engine_name), None)
         if engine:
             return {**base, "available": bool(engine.get("available")) and engine.get("model_ready") is not False, "delegate": engine}
-    if isinstance(payload, dict):
-        return {**base, "available": bool(payload.get("available", True)), "delegate": payload}
-    return {**base, "reason": "delegate doctor returned no JSON payload"}
+    return {**base, "available": bool(payload.get("available", True)), "delegate": payload}
 
 
 def _run_stage(tool: str, args: list[str], *, jsonl: bool, job_id: str, stage: str) -> None:
